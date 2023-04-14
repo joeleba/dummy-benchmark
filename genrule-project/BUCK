@@ -1,0 +1,55 @@
+
+# Credit: heavily borrowed from {OUT}meisterT's work.
+DEPTH = 100
+
+WIDTH = 3000
+
+# Base: depends on nothing.
+[genrule(
+    name = "bar_%s_0" % x,
+    out = "bar_%s_0.txt" % x,
+    cmd = "touch ${OUT}",
+) for x in range(0, WIDTH)]
+
+# bar_x_y depends on baz_x_(y-1)
+[
+    [genrule(
+        name = "bar_%s_%s" % (x, y),
+        srcs = [":bar_%s_%s" % (
+            x,
+            y - 1,
+        )],
+        out = "bar_%s_%s.txt" % (x, y),
+        cmd = "touch ${OUT}",
+    ) for y in range(1, DEPTH)]
+    for x in range(0, WIDTH)
+]
+
+# Depends on all the top-level bar targets
+genrule(
+    name = "longwide",
+    srcs = [":bar_%s_%s" % (
+        x,
+        DEPTH - 1,
+    ) for x in range(0, WIDTH)],
+    out = "foo.txt",
+    cmd = "touch ${OUT}",
+)
+
+genrule(
+    name = "longtail",
+    srcs = [":bar_0_%s" % (DEPTH - 1)] + ["baz_%s_0" % (
+        x
+    ) for x in range(0, WIDTH)],
+    out = "longtail.txt",
+    cmd = "touch ${OUT}",
+)
+
+genrule(
+    name = "flat",
+    srcs = [":bar_%s_0" % (
+        x
+    ) for x in range(0, WIDTH)],
+    out = "flat.txt",
+    cmd = "touch ${OUT}",
+)

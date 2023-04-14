@@ -1,0 +1,30 @@
+Function,Time(s),TimeRec(s),Calls,Callers,TopCaller,TopCallerCount,Allocs,AllocBytes,cmd_args,string,artifact,dict,list,output_artifact,tuple,DefaultInfo
+"TOTALS",0.010,0.010,12046,0,"",0,6023,626108,3012,3002,3,2,1,1,1,1
+"UNUSED CAPACITY",0.000,0.000,0,0,"",0,1,196480,0,0,0,0,0,0,0,0
+"prelude/genrule.bzl.process_genrule",0.003,0.010,12042,1,"(root)",1,2,164,0,0,0,1,1,0,0,0
+"symlinked_dir",0.002,0.002,0,1,"prelude/genrule.bzl.process_genrule",1,1,24,0,0,1,0,0,0,0,0
+"cmd_args",0.001,0.001,0,1,"prelude/genrule.bzl.process_genrule",1,3010,505544,3010,0,0,0,0,0,0,0
+"replace",0.001,0.001,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"add",0.001,0.001,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"run",0.001,0.001,0,1,"prelude/genrule.bzl.process_genrule",1,2,104,1,0,0,0,0,0,1,0
+"join",0.001,0.001,0,1,"prelude/genrule.bzl.process_genrule",1,3002,119984,0,3002,0,0,0,0,0,0
+"write",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,2,120,1,0,1,0,0,0,0,0
+"declare_output",0.000,0.000,0,1,"prelude/genrule.bzl._declare_output",1,1,24,0,0,1,0,0,0,0,0
+"hasattr",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"DefaultInfo()",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,2,72,0,0,0,1,0,0,0,1
+"prelude/genrule.bzl._declare_output",0.000,0.000,2,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"CacheModeInfo(allow_cache_uploads, cache_bust_genrules)",0.000,0.000,0,1,"prelude/genrule.bzl._get_cache_mode",1,0,0,0,0,0,0,0,0,0,0
+"prelude/genrule.bzl._get_cache_mode",0.000,0.000,1,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"prelude/genrule.bzl._requires_no_srcs_environment",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"relative_to",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"prelude/genrule_local_labels.bzl.genrule_labels_require_local",0.000,0.000,0,1,"prelude/genrule.bzl._requires_local",1,0,0,0,0,0,0,0,0,0,0
+"getattr",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"items",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"prelude/genrule.bzl._requires_build_root",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"prelude/genrule.bzl._requires_local",0.000,0.000,1,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"prelude/genrule.bzl._ignore_artifacts",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"prelude/utils/utils.bzl.value_or",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"append",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"hidden",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,0,0,0,0,0,0,0,0,0,0
+"endswith",0.000,0.000,0,1,"prelude/genrule.bzl._declare_output",1,0,0,0,0,0,0,0,0,0,0
+"as_output",0.000,0.000,0,1,"prelude/genrule.bzl.process_genrule",1,1,72,0,0,0,0,0,1,0,0
