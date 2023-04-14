@@ -1,0 +1,11 @@
+[repositories]
+root = .
+genrule = genrule
+prelude = prelude
+
+[repository_aliases]
+config = prelude
+
+[parser]
+target_platform_detector_spec = target:root//...->prelude//platforms:default
+
