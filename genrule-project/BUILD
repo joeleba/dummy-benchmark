@@ -1,5 +1,5 @@
 # Credit: heavily borrowed from @meisterT's work.
-DEPTH = 100
+DEPTH = 300
 
 WIDTH = 3000
 

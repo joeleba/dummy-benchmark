@@ -1,6 +1,5 @@
-
 # Credit: heavily borrowed from {OUT}meisterT's work.
-DEPTH = 100
+DEPTH = 300
 
 WIDTH = 3000
 
