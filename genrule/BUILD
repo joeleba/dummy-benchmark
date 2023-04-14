@@ -5,29 +5,29 @@ WIDTH = 3000
 
 # Base: depends on nothing.
 [genrule(
-    name = "baz_%s_0" % x,
-    outs = ["baz_%s_0.txt" % x],
+    name = "bar_%s_0" % x,
+    outs = ["bar_%s_0.txt" % x],
     cmd = "touch $@",
 ) for x in range(0, WIDTH)]
 
-# baz_x_y depends on baz_x_(y-1)
+# bar_x_y depends on baz_x_(y-1)
 [
     [genrule(
-        name = "baz_%s_%s" % (x, y),
-        srcs = ["baz_%s_%s.txt" % (
+        name = "bar_%s_%s" % (x, y),
+        srcs = ["bar_%s_%s.txt" % (
             x,
             y - 1,
         )],
-        outs = ["baz_%s_%s.txt" % (x, y)],
+        outs = ["bar_%s_%s.txt" % (x, y)],
         cmd = "touch $@",
     ) for y in range(1, DEPTH)]
     for x in range(0, WIDTH)
 ]
 
-# Depends on all the top-level baz targets
+# Depends on all the top-level bar targets
 genrule(
     name = "longwide",
-    srcs = ["baz_%s_%s.txt" % (
+    srcs = ["bar_%s_%s.txt" % (
         x,
         DEPTH - 1,
     ) for x in range(0, WIDTH)],
@@ -37,7 +37,7 @@ genrule(
 
 genrule(
     name = "longtail",
-    srcs = ["baz_0_%s.txt" % (DEPTH - 1)] + ["baz_%s_0.txt" % (
+    srcs = ["bar_0_%s.txt" % (DEPTH - 1)] + ["baz_%s_0.txt" % (
         x
     ) for x in range(0, WIDTH)],
     outs = ["longtail.txt"],
@@ -46,7 +46,7 @@ genrule(
 
 genrule(
     name = "flat",
-    srcs = ["baz_%s_0.txt" % (
+    srcs = ["bar_%s_0.txt" % (
         x
     ) for x in range(0, WIDTH)],
     outs = ["flat.txt"],
