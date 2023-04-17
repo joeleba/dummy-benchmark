@@ -20,22 +20,24 @@ function benchmark() {
     cd $project
 
     echo "Data file: ${data_file}"
-    echo "Bazel log: ${log}"
+    echo "Bazel/Buck2 log: ${log}"
 
     for (( i=1; i<=runs; i++ )) 
     do
         echo "[bazel] Run $i/$runs: ${@}"
-        bazel_single_run $data_file $@ &>> $log
+        bazel_single_run $data_file $log $@
 	echo "[bazel] res: $(tail -n 1 $data_file)"
 
         echo "[buck2] Run $i/$runs: ${@}"
-        buck2_single_run $data_file $@ &>> $log
+        buck2_single_run $data_file $log $@
 	echo "[buck2] res: $(tail -n 1 $data_file)"
     done
 }
 
 function bazel_single_run() {
     data_file=$1
+    shift
+    log=$1
     shift
     # Warmup
     bazel build $@
@@ -44,7 +46,8 @@ function bazel_single_run() {
     bazel clean --expunge
 
     # Actual run
-    { /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' bazel build $@ ; } 2>> $data_file
+    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' bazel build $@ > $log 2>&1
+    tail -n -1 >> $data_file
     # remove the \n
     truncate -s -1 $data_file
     printf "exit_code=$?, " >> $data_file
@@ -59,13 +62,16 @@ function bazel_single_run() {
 function buck2_single_run() {
     data_file=$1
     shift
+    log=$1
+    shift
 
     # Clean
     buck2 clean
     buck2 killall
 
     # Actual run
-    { /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' buck2 build $@ ; } 2>> $data_file
+    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' buck2 build $@ > $log 2>&1
+    tail -n -1 >> $data_file
     # remove the \n
     truncate -s -1 $data_file
     printf "exit_code=$?, " >> $data_file
