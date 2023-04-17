@@ -1,2 +1,3 @@
 /bazel-*
 /genrule-project/buck-out/*
+/genrule-project/bazel/*
