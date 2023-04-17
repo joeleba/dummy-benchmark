@@ -25,13 +25,16 @@ function benchmark() {
     for (( i=1; i<=runs; i++ )) 
     do
         echo "[bazel] Run $i/$runs: ${@}"
-        bazel_single_run $data_file $log $@
+        bazel_single_run $data_file $log $@ &>/dev/null
 	echo "[bazel] res: $(tail -n 1 $data_file)"
 
         echo "[buck2] Run $i/$runs: ${@}"
-        buck2_single_run $data_file $log $@
+        buck2_single_run $data_file $log $@ &> /dev/null
 	echo "[buck2] res: $(tail -n 1 $data_file)"
     done
+
+    echo "FINAL RESULT:"
+    cat $data_file
 }
 
 function bazel_single_run() {
@@ -46,17 +49,20 @@ function bazel_single_run() {
     bazel clean --expunge
 
     # Actual run
-    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' bazel build $@ > $log 2>&1
-    tail -n -1 >> $data_file
+    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, max_res_size_mb=%M, ' bazel build $@ > $log 2>&1
+    tail -n -1 $log | awk 'match($4, /[0-9]+/, arr) { print $1, $2, $3, "max_res_size_mb=" arr[0]/1024 ", "}' >> $data_file
     # remove the \n
     truncate -s -1 $data_file
     printf "exit_code=$?, " >> $data_file
+
+    PID=$(bazel info server_pid)
+    printf "retained_mem_pmap_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 ", " }')" >> $data_file
 
     for j in {1..3}
     do
         bazel info used-heap-size-after-gc
     done
-    printf "mem_mb=$(bazel info used-heap-size-after-gc | awk 'match($0, /[0-9]+/, arr) { print arr[0] }')\n" >> $data_file
+    printf "retained_mem_mb_jvm=$(bazel info used-heap-size-after-gc | awk 'match($0, /[0-9]+/, arr) { print arr[0] }')\n" >> $data_file
 }
 
 function buck2_single_run() {
@@ -70,15 +76,15 @@ function buck2_single_run() {
     buck2 killall
 
     # Actual run
-    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' buck2 build $@ > $log 2>&1
-    tail -n -1 >> $data_file
+    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, max_res_size_mb=%M, ' buck2 build $@ > $log 2>&1
+    tail -n -1 $log | awk 'match($4, /[0-9]+/, arr) { print $1, $2, $3, "max_res_size_mb=" arr[0]/1024 ", "}' >> $data_file
     # remove the \n
     truncate -s -1 $data_file
     printf "exit_code=$?, " >> $data_file
 
     PID=$(buck2 status | grep pid | awk 'match($0, /[0-9]+/, arr) { print arr[0] }')
     
-    printf "mem_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 }')\n" >> $data_file
+    printf "retained_mem_pmap_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 }')\n" >> $data_file
 }
 
 (benchmark genrule-project 5 flat //:flat)
