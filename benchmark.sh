@@ -1,26 +1,34 @@
 #!/bin/bash
 
 RUNS=5
-DATA_DIR=/tmp/benchmark/
+DATA_DIR=/tmp/benchmark
+BASH_TIMEFORMAT=
 
 mkdir -p $DATA_DIR
 
-function bazel_benchmark() {
+# Should be invoke in a subshell since we're changing the working directory.
+function benchmark() {
+    project=$1
+    shift
     runs=$1
     shift
-    data_file=$1
-    shift
-    log=$1
-    shift
+    data_file="${DATA_DIR}/${project}.out"
+    log="${DATA_DIR}/${project}.log"
+
+    cd $project
 
     echo "Data file: ${data_file}"
     echo "Bazel log: ${log}"
 
-    for i in $(seq $runs) 
+    for (( i=1; i<=runs; i++ )) 
     do
-        echo "Running bazel build ${i}/${runs}: ${@}"
+        echo "[bazel] Run $i/$runs: ${@}"
         bazel_single_run $data_file $@ &>> $log
-	echo "Result: $(tail -n 5 $data_file)"
+	echo "[bazel] res: $(tail -n 1 $data_file)"
+
+        echo "[buck2] Run $i/$runs: ${@}"
+        buck2_single_run $data_file $@ &>> $log
+	echo "[buck2] res: $(tail -n 1 $data_file)"
     done
 }
 
@@ -34,14 +42,35 @@ function bazel_single_run() {
     bazel clean --expunge
 
     # Actual run
-    { time -p bazel build $@ ; } 2>> $data_file
-    echo -e "exit_code\t$?" >> $data_file
+    { /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' bazel build $@ ; } 2>> $data_file
+    # remove the \n
+    truncate -s -1 $data_file
+    printf "exit_code=$?, " >> $data_file
 
-    for i in 1..3
+    for j in {1..3}
     do
         bazel info used-heap-size-after-gc
     done
-    echo -e "mem\t$(bazel info used-heap-size-after-gc)" >> $data_file
+    printf "mem_mb=$(bazel info used-heap-size-after-gc | awk 'match($0, /[0-9]+/, arr) { print arr[0] }')\n" >> $data_file
 }
 
-bazel_benchmark $RUNS $DATA_DIR/bazel.data $DATA_DIR/bazel.log //:flat
+function buck2_single_run() {
+    data_file=$1
+    shift
+
+    # Clean
+    buck2 clean
+    buck2 killall
+
+    # Actual run
+    { /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, ' buck2 build $@ ; } 2>> $data_file
+    # remove the \n
+    truncate -s -1 $data_file
+    printf "exit_code=$?, " >> $data_file
+
+    PID=$(buck2 status | grep pid | awk 'match($0, /[0-9]+/, arr) { print arr[0] }')
+    
+    printf "mem_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 }')\n" >> $data_file
+}
+
+(benchmark genrule-project 2 //:flat)
