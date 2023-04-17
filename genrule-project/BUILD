@@ -10,7 +10,7 @@ WIDTH = 3000
     cmd = "touch $@",
 ) for x in range(0, WIDTH)]
 
-# bar_x_y depends on baz_x_(y-1)
+# bar_x_y depends on bar_x_(y-1)
 [
     [genrule(
         name = "bar_%s_%s" % (x, y),
@@ -36,11 +36,9 @@ genrule(
 )
 
 genrule(
-    name = "longtail",
-    srcs = ["bar_0_%s.txt" % (DEPTH - 1)] + ["baz_%s_0.txt" % (
-        x
-    ) for x in range(0, WIDTH)],
-    outs = ["longtail.txt"],
+    name = "chain",
+    srcs = ["bar_0_%s.txt" % (DEPTH - 1)],
+    outs = ["chain.txt"],
     cmd = "touch $@",
 )
 
