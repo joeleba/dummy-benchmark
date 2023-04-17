@@ -2,7 +2,6 @@
 
 RUNS=5
 DATA_DIR=/tmp/benchmark
-BASH_TIMEFORMAT=
 
 mkdir -p $DATA_DIR
 
@@ -12,8 +11,11 @@ function benchmark() {
     shift
     runs=$1
     shift
-    data_file="${DATA_DIR}/${project}.out"
-    log="${DATA_DIR}/${project}.log"
+    label=$1
+    shift
+    time_started=$(date '+%Y%m%d_%H%M%S')
+    data_file="${DATA_DIR}/${project}-${label}-${time_started}.out"
+    log="${DATA_DIR}/${project}-${label}-${time_started}.log"
 
     cd $project
 
@@ -73,4 +75,6 @@ function buck2_single_run() {
     printf "mem_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 }')\n" >> $data_file
 }
 
-(benchmark genrule-project 2 //:flat)
+(benchmark genrule-project 5 flat //:flat)
+(benchmark genrule-project 5 longtail //:longtail)
+(benchmark genrule-project 5 longwide //:longwide)
