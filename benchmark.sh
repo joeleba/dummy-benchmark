@@ -1,7 +1,9 @@
 #!/bin/bash
 
-export TIMEFORMAT="%R,%U,%S"
 RUNS=5
+DATA_DIR=/tmp/benchmark/
+
+mkdir -p $DATA_DIR
 
 function bazel_benchmark() {
     runs=$1
@@ -14,10 +16,11 @@ function bazel_benchmark() {
     echo "Data file: ${data_file}"
     echo "Bazel log: ${log}"
 
-    for i in 1..$runs
+    for i in $(seq $runs) 
     do
         echo "Running bazel build ${i}/${runs}: ${@}"
-        bazel_single_run $data_file $@ 2>&1 >> $log
+        bazel_single_run $data_file $@ &>> $log
+	echo "Result: $(tail -n 5 $data_file)"
     done
 }
 
@@ -31,13 +34,14 @@ function bazel_single_run() {
     bazel clean --expunge
 
     # Actual run
-    { time bazel build $@ ; } 2>> $data_file
+    { time -p bazel build $@ ; } 2>> $data_file
+    echo -e "exit_code\t$?" >> $data_file
 
     for i in 1..3
     do
         bazel info used-heap-size-after-gc
     done
-    bazel info used-heap-size-after-gc >> $data_file
+    echo -e "mem\t$(bazel info used-heap-size-after-gc)" >> $data_file
 }
 
-bazel_benchmark $RUNS /tmp/bazel.data /tmp/bazel.log build //:flat
+bazel_benchmark $RUNS $DATA_DIR/bazel.data $DATA_DIR/bazel.log //:flat
