@@ -1,6 +1,5 @@
 #!/bin/bash
 
-RUNS=5
 DATA_DIR=/tmp/benchmark
 
 mkdir -p $DATA_DIR
@@ -42,14 +41,12 @@ function bazel_single_run() {
     shift
     log=$1
     shift
-    # Warmup
-    bazel build $@
 
     # Clean
     bazel clean --expunge
 
     # Actual run
-    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, max_res_size_mb=%M, ' bazel build $@ >> $log 2>&1
+    /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, max_res_size_mb=%M, ' bazel build --spawn_strategy=standalone $@ >> $log 2>&1
     exit_code=$?
     tail -n -1 $log | awk 'match($4, /[0-9]+/, arr) { print $1, $2, $3, "max_res_size_mb=" arr[0]/1024 ", "}' >> $data_file
     # remove the \n
@@ -89,7 +86,7 @@ function buck2_single_run() {
     printf "retained_mem_pmap_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 }')\n" >> $data_file
 }
 
-#(benchmark genrule-project 5 flat //:flat)
-#(benchmark genrule-project 5 chain //:chain)
-(benchmark genrule-project 3 longwide //:longwide)
-#(benchmark genrule-project 5 longtail //:flat //:chain)
+(benchmark genrule-project 5 flat //:flat)
+(benchmark genrule-project 5 chain //:chain)
+(benchmark genrule-project 5 longtail //:flat //:chain)
+(benchmark genrule-project 4 longwide //:longwide)
