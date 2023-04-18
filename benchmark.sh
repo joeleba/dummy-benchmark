@@ -50,10 +50,11 @@ function bazel_single_run() {
 
     # Actual run
     /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, max_res_size_mb=%M, ' bazel build $@ > $log 2>&1
+    exit_code=$?
     tail -n -1 $log | awk 'match($4, /[0-9]+/, arr) { print $1, $2, $3, "max_res_size_mb=" arr[0]/1024 ", "}' >> $data_file
     # remove the \n
     truncate -s -1 $data_file
-    printf "exit_code=$?, " >> $data_file
+    printf "exit_code=$exit_code, " >> $data_file
 
     PID=$(bazel info server_pid)
     printf "retained_mem_pmap_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 ", " }')" >> $data_file
@@ -77,10 +78,11 @@ function buck2_single_run() {
 
     # Actual run
     /usr/bin/time -f 'wall=%e, cpu=%U, system=%S, max_res_size_mb=%M, ' buck2 build $@ > $log 2>&1
+    exit_code=$?
     tail -n -1 $log | awk 'match($4, /[0-9]+/, arr) { print $1, $2, $3, "max_res_size_mb=" arr[0]/1024 ", "}' >> $data_file
     # remove the \n
     truncate -s -1 $data_file
-    printf "exit_code=$?, " >> $data_file
+    printf "exit_code=$exit_code, " >> $data_file
 
     PID=$(buck2 status | grep pid | awk 'match($0, /[0-9]+/, arr) { print arr[0] }')
     
