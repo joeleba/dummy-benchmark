@@ -1,7 +1,7 @@
 # Credit: heavily borrowed from {OUT}meisterT's work.
 DEPTH = 100
 
-WIDTH = 1500
+WIDTH = 3000
 
 # Base: depends on nothing.
 [genrule(

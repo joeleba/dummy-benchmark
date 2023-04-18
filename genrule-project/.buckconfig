@@ -13,3 +13,6 @@ buck = none
 [parser]
 target_platform_detector_spec = target:root//...->prelude//platforms:default
 
+[sandbox]
+genrule_sanbox_enabled = false
+
