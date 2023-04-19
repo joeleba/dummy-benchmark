@@ -26,11 +26,11 @@ function benchmark() {
     do
         echo "[bazel] Run $i/$runs: ${@}"
         bazel_single_run $data_file $log $@ &>/dev/null
-	echo "[bazel] res: $(tail -n 1 $data_file)"
+	tail -n 1 $data_file
 
         echo "[buck2] Run $i/$runs: ${@}"
         buck2_single_run $data_file $log $@ &> /dev/null
-	echo "[buck2] res: $(tail -n 1 $data_file)"
+	tail -n 1 $data_file
     done
 
     echo "FINAL RESULT:"
@@ -63,7 +63,7 @@ function bazel_single_run() {
     done
     retained_mem_jvm_mb=$(bazel info used-heap-size-after-gc | awk 'match($0, /[0-9]+/, arr) { print arr[0] }')
     
-    printf "wall=$wall_time, cpu=$utime, system=$stime, exit_code=$exit_code, max_res_size_mb=$max_res_size_mb, retained_mem_pmap_mb=$retained_mem_pmap_mb, retained_mem_jvm_mb=$retained_mem_jvm_mb\n" >> $data_file
+    printf "[bazel] wall=$wall_time, cpu=$utime, system=$stime, exit_code=$exit_code, max_res_size_mb=$max_res_size_mb, retained_mem_pmap_mb=$retained_mem_pmap_mb, retained_mem_jvm_mb=$retained_mem_jvm_mb\n" >> $data_file
 }
 
 function buck2_single_run() {
@@ -87,10 +87,10 @@ function buck2_single_run() {
     max_res_size_mb=$(tail -n -1 $log | awk 'match($2, /[0-9]+/, arr) { print arr[0]/1024}')
     retained_mem_pmap_mb=$(pmap ${PID} | grep total | awk 'match($0, /[0-9]+/, arr) { print arr[0]/1024 }')
 
-    printf "wall=$wall_time, cpu=$utime, system=$stime, exit_code=$exit_code, max_res_size_mb=$max_res_size_mb, retained_mem_pmap_mb=$retained_mem_pmap_mb\n" >> $data_file
+    printf "[buck2] wall=$wall_time, cpu=$utime, system=$stime, exit_code=$exit_code, max_res_size_mb=$max_res_size_mb, retained_mem_pmap_mb=$retained_mem_pmap_mb\n" >> $data_file
 }
 
-(benchmark genrule-project 5 flat //:flat)
-(benchmark genrule-project 5 chain //:chain)
-(benchmark genrule-project 5 longtail //:flat //:chain)
+#(benchmark genrule-project 5 flat //:flat)
+#(benchmark genrule-project 5 chain //:chain)
+#(benchmark genrule-project 5 longtail //:flat //:chain)
 (benchmark genrule-project 5 longwide //:longwide)
