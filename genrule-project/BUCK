@@ -1,14 +1,13 @@
-# Credit: heavily borrowed from {OUT}meisterT's work.
-DEPTH = 100
-
-WIDTH = 3000
+# Credit: heavily borrowed from meisterT's work.
+DEPTH_LIMIT = 3000
+WIDTH_LIMIT = 3000
 
 # Base: depends on nothing.
 [genrule(
     name = "bar_%s_0" % x,
     out = "bar_%s_0.txt" % x,
     cmd = "touch ${OUT}",
-) for x in range(0, WIDTH)]
+) for x in range(0, WIDTH_LIMIT)]
 
 # bar_x_y depends on bar_x_(y-1)
 [
@@ -20,24 +19,26 @@ WIDTH = 3000
         )],
         out = "bar_%s_%s.txt" % (x, y),
         cmd = "touch ${OUT}",
-    ) for y in range(1, DEPTH)]
-    for x in range(0, WIDTH)
+    ) for y in range(1, DEPTH_LIMIT)]
+    for x in range(0, WIDTH_LIMIT)
 ]
 
-# Depends on all the top-level bar targets
+# Benchmark targets
+LONGWIDE_DEPTH=500
+LONGWIDE_WIDTH=500
 genrule(
     name = "longwide",
     srcs = [":bar_%s_%s" % (
         x,
-        DEPTH - 1,
-    ) for x in range(0, WIDTH)],
+        LONGWIDE_DEPTH - 1,
+    ) for x in range(0, LONGWIDE_WIDTH)],
     out = "foo.txt",
     cmd = "touch ${OUT}",
 )
 
 genrule(
     name = "chain",
-    srcs = [":bar_0_%s" % (DEPTH - 1)],
+    srcs = [":bar_0_%s" % (DEPTH_LIMIT - 1)],
     out = "chain.txt",
     cmd = "touch ${OUT}",
 )
@@ -46,7 +47,7 @@ genrule(
     name = "flat",
     srcs = [":bar_%s_0" % (
         x
-    ) for x in range(0, WIDTH)],
+    ) for x in range(0, WIDTH_LIMIT)],
     out = "flat.txt",
     cmd = "touch ${OUT}",
 )
