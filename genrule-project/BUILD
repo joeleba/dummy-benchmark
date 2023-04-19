@@ -1,6 +1,6 @@
 # Credit: heavily borrowed from @meisterT's work.
-DEPTH_LIMIT = 3000
-WIDTH_LIMIT = 300
+DEPTH_LIMIT = 500
+WIDTH_LIMIT = 2000
 LONGWIDE_DEPTH=500
 LONGWIDE_WIDTH=500
 
@@ -32,7 +32,7 @@ LONGWIDE_WIDTH=500
     srcs = ["bar_0_%s.txt" % (
         x - 1,
     )],
-    outs = ["bar_0_%x.txt" % x],
+    outs = ["bar_0_%s.txt" % x],
     cmd = "touch $@",
 ) for x in range(1, DEPTH_LIMIT)]
 
