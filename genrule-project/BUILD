@@ -1,8 +1,17 @@
 # Credit: heavily borrowed from @meisterT's work.
+# The graph looks like this:
+# *
+# *
+# * * *
+# * * *
+# * * * * *
 DEPTH_LIMIT = 3000
-WIDTH_LIMIT = 3000
+WIDTH_LIMIT = 300
+LONGWIDE_DEPTH=500
+LONGWIDE_WIDTH=500
 
-# Base: depends on nothing.
+
+# A flat base.
 [genrule(
     name = "bar_%s_0" % x,
     outs = ["bar_%s_0.txt" % x],
@@ -19,13 +28,22 @@ WIDTH_LIMIT = 3000
         )],
         outs = ["bar_%s_%s.txt" % (x, y)],
         cmd = "touch $@",
-    ) for y in range(1, DEPTH_LIMIT)]
-    for x in range(0, WIDTH_LIMIT)
+    ) for y in range(1, LONGWIDE_DEPTH)]
+    for x in range(0, LONGWIDE_WIDTH)
 ]
 
+# A long tail 
+[genrule(
+    name = "bar_0_%s" % x,
+    srcs = [":bar_0_%s" % (
+        x - 1,
+    )],
+    out = "bar_0_%x.txt" % x,
+    cmd = "touch ${OUT}",
+) for x in range(1, DEPTH_LIMIT)]
+
+
 # Benchmark targets
-LONGWIDE_DEPTH=500
-LONGWIDE_WIDTH=500
 genrule(
     name = "longwide",
     srcs = ["bar_%s_%s.txt" % (

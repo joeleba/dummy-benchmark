@@ -1,6 +1,8 @@
 # Credit: heavily borrowed from meisterT's work.
 DEPTH_LIMIT = 3000
 WIDTH_LIMIT = 3000
+LONGWIDE_DEPTH=500
+LONGWIDE_WIDTH=500
 
 # Base: depends on nothing.
 [genrule(
@@ -19,13 +21,21 @@ WIDTH_LIMIT = 3000
         )],
         out = "bar_%s_%s.txt" % (x, y),
         cmd = "touch ${OUT}",
-    ) for y in range(1, DEPTH_LIMIT)]
-    for x in range(0, WIDTH_LIMIT)
+    ) for y in range(1, LONGWIDE_DEPTH)]
+    for x in range(0, LONGWIDE_WIDTH)
 ]
 
+# A long tail 
+[genrule(
+    name = "bar_0_%s" % x,
+    srcs = [":bar_0_%s" % (
+        x - 1,
+    )],
+    out = "bar_0_%x.txt" % x,
+    cmd = "touch ${OUT}",
+) for x in range(1, DEPTH_LIMIT)]
+
 # Benchmark targets
-LONGWIDE_DEPTH=500
-LONGWIDE_WIDTH=500
 genrule(
     name = "longwide",
     srcs = [":bar_%s_%s" % (
