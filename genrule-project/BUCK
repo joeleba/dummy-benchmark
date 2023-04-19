@@ -1,4 +1,4 @@
-# Credit: heavily borrowed from meisterT's work.
+# Credit: heavily borrowed from @meisterT's work.
 DEPTH_LIMIT = 3000
 WIDTH_LIMIT = 3000
 LONGWIDE_DEPTH=500

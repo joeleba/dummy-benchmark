@@ -23,7 +23,7 @@ LONGWIDE_WIDTH=500
         outs = ["bar_%s_%s.txt" % (x, y)],
         cmd = "touch $@",
     ) for y in range(1, LONGWIDE_DEPTH)]
-    for x in range(1, LONGWIDE_WIDTH)
+    for x in range(0, LONGWIDE_WIDTH)
 ]
 
 # A long tail 
@@ -32,8 +32,8 @@ LONGWIDE_WIDTH=500
     srcs = [":bar_0_%s" % (
         x - 1,
     )],
-    out = "bar_0_%x.txt" % x,
-    cmd = "touch ${OUT}",
+    outs = ["bar_0_%x.txt" % x],
+    cmd = "touch $@",
 ) for x in range(1, DEPTH_LIMIT)]
 
 
