@@ -1,10 +1,4 @@
 # Credit: heavily borrowed from @meisterT's work.
-# The graph looks like this:
-# *
-# *
-# * * *
-# * * *
-# * * * * *
 DEPTH_LIMIT = 3000
 WIDTH_LIMIT = 300
 LONGWIDE_DEPTH=500

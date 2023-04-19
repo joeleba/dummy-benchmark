@@ -1,10 +1,16 @@
 # Credit: heavily borrowed from meisterT's work.
+# The graph looks like this:
+# *
+# *
+# * * *
+# * * *
+# * * * * *
 DEPTH_LIMIT = 3000
 WIDTH_LIMIT = 3000
 LONGWIDE_DEPTH=500
 LONGWIDE_WIDTH=500
 
-# Base: depends on nothing.
+# A flat base.
 [genrule(
     name = "bar_%s_0" % x,
     out = "bar_%s_0.txt" % x,
