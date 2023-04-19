@@ -93,4 +93,4 @@ function buck2_single_run() {
 #(benchmark genrule-project 5 flat //:flat)
 #(benchmark genrule-project 5 chain //:chain)
 #(benchmark genrule-project 5 longtail //:flat //:chain)
-(benchmark genrule-project 5 longwide //:longwide)
+(benchmark genrule-project 3 longwide //:longwide)

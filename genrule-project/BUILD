@@ -1,7 +1,7 @@
 # Credit: heavily borrowed from @meisterT's work.
 DEPTH_LIMIT = 500
-WIDTH_LIMIT = 2000
-LONGWIDE_DEPTH=500
+WIDTH_LIMIT = 1000
+LONGWIDE_DEPTH=300
 LONGWIDE_WIDTH=500
 
 
