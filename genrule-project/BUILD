@@ -29,7 +29,7 @@ LONGWIDE_WIDTH=500
 # A long tail 
 [genrule(
     name = "bar_0_%s" % x,
-    srcs = [":bar_0_%s" % (
+    srcs = ["bar_0_%s.txt" % (
         x - 1,
     )],
     outs = ["bar_0_%x.txt" % x],
@@ -44,7 +44,7 @@ genrule(
         x,
         LONGWIDE_DEPTH - 1,
     ) for x in range(0, LONGWIDE_WIDTH)],
-    outs = ["foo.txt"],
+    outs = ["longwide.txt"],
     cmd = "touch $@",
 )
 

@@ -42,7 +42,7 @@ genrule(
         x,
         LONGWIDE_DEPTH - 1,
     ) for x in range(0, LONGWIDE_WIDTH)],
-    out = "foo.txt",
+    out = "longwide.txt",
     cmd = "touch ${OUT}",
 )
 
