@@ -90,7 +90,9 @@ function buck2_single_run() {
     printf "[buck2] wall=$wall_time, cpu=$utime, system=$stime, exit_code=$exit_code, max_res_size_mb=$max_res_size_mb, retained_mem_pmap_mb=$retained_mem_pmap_mb\n" >> $data_file
 }
 
-#(benchmark genrule-project 5 flat //:flat)
-#(benchmark genrule-project 5 chain //:chain)
-#(benchmark genrule-project 5 longtail //:flat //:chain)
+(benchmark genrule-project 10 flat //:flat)
+(benchmark genrule-project 5 chain //:chain)
+(benchmark genrule-project 5 longtail //:flat //:chain)
 (benchmark genrule-project 3 longwide //:longwide)
+
+(benchmark genrule-project 3 flatwide //flatwide:flatwide)
