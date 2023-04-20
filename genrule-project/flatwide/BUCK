@@ -1,0 +1,19 @@
+# Credit: heavily borrowed from @meisterT's work.
+WIDTH_LIMIT = 150000
+
+# A flat base.
+[genrule(
+    name = "bar_%s" % x,
+    out = "bar_%s.txt" % x,
+    cmd = "touch ${OUT}",
+) for x in range(0, WIDTH_LIMIT)]
+
+# Benchmark targets
+genrule(
+    name = "flatwide",
+    srcs = [":bar_%s" % (
+        x
+    ) for x in range(0, WIDTH_LIMIT)],
+    out = "flatwide.txt",
+    cmd = "touch ${OUT}",
+)
